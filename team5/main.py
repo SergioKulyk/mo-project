@@ -25,6 +25,7 @@ def f2(x):
     return 4. * (x[0] - 5) ** 2 + (x[1] - 6) ** 2
 
 
+
 # Створюємо обєкт класа Team5
 team5 = Team5()
 
@@ -52,5 +53,21 @@ mcvard_name = "Метод Макварада"
 mcvard_res = team5.mcvard(x0, eps, u, f2)
 
 print_res(mcvard_name, mcvard_res)
+
+# ----------------------------------------------------------
+
+
+# ----------------------------------------------------------
+# Тест методу Хука-Джівса
+x = np.array([1,3])
+
+h = 0.5
+a = 1
+lam = 1
+
+huca_jivsa_name: str = "Метод Хука-Дживса"
+huca_jivsa_res = team5.huca_jivsa(x, h, a, lam, f2)
+
+print_res(huca_jivsa_name, huca_jivsa_res)
 
 # ----------------------------------------------------------
