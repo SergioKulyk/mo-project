@@ -25,6 +25,13 @@ def f2(x):
     return 4. * (x[0] - 5) ** 2 + (x[1] - 6) ** 2
 
 
+def f_toxins_test(x):
+    return x ** 2 + x + np.sin(x)
+
+
+def df_toxins_test(x):
+    return 2 * x + 1 + np.cos(x)
+
 
 # Створюємо обєкт класа Team5
 team5 = Team5()
@@ -59,7 +66,7 @@ print_res(mcvard_name, mcvard_res)
 
 # ----------------------------------------------------------
 # Тест методу Хука-Джівса
-x = np.array([1,3])
+x = np.array([1, 3])
 
 h = 0.5
 a = 1
@@ -69,5 +76,19 @@ huca_jivsa_name: str = "Метод Хука-Дживса"
 huca_jivsa_res = team5.huca_jivsa(x, h, a, lam, f2)
 
 print_res(huca_jivsa_name, huca_jivsa_res)
+
+# ----------------------------------------------------------
+
+
+# ----------------------------------------------------------
+# Тест методу хорд
+a = -1
+b = 0
+eps = 10 ** -4
+
+toxins_name: str = "Метод хорд"
+toxins_res = team5.toxins(a, b, f_toxins_test, df_toxins_test)
+
+print_res(toxins_name, toxins_res)
 
 # ----------------------------------------------------------
