@@ -128,3 +128,47 @@ class Team5:
 
         return x1, f(x1), k
 
+    # --------------------------------------------------------------------------------
+
+    # Метод Хука-Дживса
+    @staticmethod
+    def huca_jivsa(x, h, a, lam, f, eps=10e-4):
+        k = 0
+
+        y = x
+        y1 = x
+
+        while Team5.norma_huca_jivsa(x) <= eps:
+            if f([y[0] + h, y[1]]) < f(y):
+                if f([y[0] + h, y[1] + h]) < f(y):
+                    y1 = y1 + h
+                elif f([y[0] + h, y[1] - h]) < f(y):
+                    y1[0] = y1[0] + h
+                    y1[1] = y1[1] - h
+            elif f([y[0] - h, y[1]]) < f(y):
+                if f([y[0] - h, y[1] + h]) < f(y):
+                    y1[0] = y1[0] - h
+                    y1[1] = y1[1] + h
+                elif f([y[0] - h, y[1] - h]) < f(y):
+                    y1 = y1 - h
+            else:
+                y1 = y
+
+            if f(y1) < f(y):
+                x1 = y1
+                y = x1 + lam * (x1 - x)
+            else:
+                pass
+
+            h /= a
+            y = x
+            k += 1
+            print(x)
+
+        return x, f(x), k
+
+    def norma_huca_jivsa(x):
+        return max(map(abs, x))
+
+
+
