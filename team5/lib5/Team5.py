@@ -1,8 +1,10 @@
 from random import *
 
-from numpy import *
+import numpy as np
 
 import matplotlib.pyplot as plt
+
+from numpy import linalg
 
 
 class Team5:
@@ -16,12 +18,12 @@ class Team5:
     def swarm_parties(s, d, f, swarm=50, xmin=-10, xmax=10, w=0.72, c1=1.19, c2=1.19, plot_animation=False):
         k = 1
 
-        x = zeros((s, d))
-        v = zeros((s, d))
-        p = zeros((s, d))
-        fitness = zeros(s)
+        x = np.zeros((s, d))
+        v = np.zeros((s, d))
+        p = np.zeros((s, d))
+        fitness = np.zeros(s)
 
-        fp = zeros(s)
+        fp = np.zeros(s)
 
         if plot_animation:
             plt.show()
@@ -86,4 +88,43 @@ class Team5:
             axes.set_ylim([xmin, xmax])
             plt.plot(x[i][0], x[i][1], 'ro')
         plt.pause(0.1)
+
+    # --------------------------------------------------------------------------------
+    """Метод Макварда"""
+
+    # Допоміжний метод
+    @staticmethod
+    def gradient(x):
+        return np.array([8. * (x[0] - 5), 2 * (x[1] - 6)])
+
+    # Допоміжний метод
+    @staticmethod
+    def hesse(x0):
+        return np.array([[8., 0], [0, 2.]])
+
+    # Норма x.
+    @staticmethod
+    def norma(x):
+        return np.sqrt(x[0] ** 2 + x[1] ** 2)
+
+    @staticmethod
+    def mcvard(x0, eps, u, f, max_iter=50):
+        k = 0
+
+        x1 = np.array([])
+
+        E = np.array([[1, 0], [0, 1]])
+
+        while Team5.norma(Team5.gradient(x0)) >= eps and k < max_iter:
+            x1 = x0 - np.dot(linalg.inv(Team5.hesse(x0) + u * E), Team5.gradient(x0))
+
+            if f(x1) < f(x0):
+                u /= 2
+            else:
+                u *= 2
+
+            x0 = x1.copy()
+            k += 1
+
+        return x1, f(x1), k
 
