@@ -104,4 +104,4 @@ venv.bak/
 .mypy_cache/
 .venv/*
 
-.ipynb_checkpoints
+.ipynb_checkpoints/*
