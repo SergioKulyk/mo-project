@@ -1,14 +1,11 @@
-from random import *
-
 import numpy as np
-
 import matplotlib.pyplot as plt
 
 from numpy import linalg
+from random import *
 
 
 class Team5:
-    """"""
 
     def __init__(sef):
         """Constructors"""
@@ -18,7 +15,7 @@ class Team5:
     '''Метод золотого перерізу'''
 
     @staticmethod
-    def golden_section(a, b, f, eps=10**(-4), t=0.38196):
+    def golden_section(a, b, f, eps=10 ** (-4), t=0.38196):
 
         k = 0
         while abs(a - b) > eps:
@@ -97,7 +94,104 @@ class Team5:
         return [x1, f(x1), k]
 
     # --------------------------------------------------------------------------------
+    """ Найшвідшого градієнтного спуску """
+
+    @staticmethod
+    def grad(x):
+        return np.array([2 * x[0] + 4 * x[1], 4 * x[0] + 34 * x[1] + 5])
+
+    @staticmethod
+    def dichotomy(x0, f, a=-5, b=6, eps=10 ** (-6)):
+
+        delta = eps / 10
+
+        while abs(b - a) > eps:
+            alpha1 = (a + b - delta) / 2
+            alpha2 = (a + b + delta) / 2
+
+            f1 = f(x0 - alpha1 * Team5.grad(x0))
+            f2 = f(x0 - alpha2 * Team5.grad(x0))
+
+            if f1 < f2:
+                b = alpha2
+            else:
+                a = alpha1
+
+        return (a + b) / 2
+
+    @staticmethod
+    def norma_faster_gradient_descent(g):
+        s = 0
+        for i in range(0, len(g)):
+            s = s + g[i] ** 2
+        return np.sqrt(s)
+
+    @staticmethod
+    def faster_gradient_descent(x0, f, eps=10 ** (-4)):
+        k = 1
+
+        p = -Team5.grad(x0)
+
+        alpha = Team5.dichotomy(x0, f)
+
+        x1 = x0 + alpha * p
+
+        while Team5.norma_faster_gradient_descent(Team5.grad(x1)) > eps:
+            b = Team5.norma_faster_gradient_descent(Team5.grad(x1)) ** 2 / Team5.norma_faster_gradient_descent(
+                Team5.grad(x0)) ** 2
+            p = - Team5.grad(x1) + b * p
+
+            x0 = x1
+            alpha = Team5.dichotomy(x0, f)
+
+            x1 = x0 + alpha * p
+
+            k += 1
+
+        return [x1, f(x1), k]
+
+    # --------------------------------------------------------------------------------
+    """ Метод Макварда """
+
+    # Допоміжний метод
+    @staticmethod
+    def gradient(x):
+        return np.array([8. * (x[0] - 5), 2 * (x[1] - 6)])
+
+    # Допоміжний метод
+    @staticmethod
+    def hesse(x0):
+        return np.array([[8., 0], [0, 2.]])
+
+    # Норма x.
+    @staticmethod
+    def norma_mcvard(x):
+        return np.sqrt(x[0] ** 2 + x[1] ** 2)
+
+    @staticmethod
+    def mcvard(x0, f, eps=10 ** (-20), u=10 ** 2, max_iter=50):
+        k = 0
+
+        x1 = np.array([])
+
+        E = np.array([[1, 0], [0, 1]])
+
+        while Team5.norma_mcvard(Team5.gradient(x0)) >= eps and k < max_iter:
+            x1 = x0 - np.dot(linalg.inv(Team5.hesse(x0) + u * E), Team5.gradient(x0))
+
+            if f(x1) < f(x0):
+                u /= 2
+            else:
+                u *= 2
+
+            x0 = x1.copy()
+            k += 1
+
+        return x1, f(x1), k
+
+    # --------------------------------------------------------------------------------
     """ Метод рою частиць """
+
     @staticmethod
     def swarm_parties(s, d, f, swarm=50, xmin=-10, xmax=10, w=0.72, c1=1.19, c2=1.19, plot_animation=False):
         k = 1
@@ -172,45 +266,3 @@ class Team5:
             axes.set_ylim([xmin, xmax])
             plt.plot(x[i][0], x[i][1], 'ro')
         plt.pause(0.1)
-
-    # --------------------------------------------------------------------------------
-    """ Метод Макварда """
-
-    # Допоміжний метод
-    @staticmethod
-    def gradient(x):
-        return np.array([8. * (x[0] - 5), 2 * (x[1] - 6)])
-
-    # Допоміжний метод
-    @staticmethod
-    def hesse(x0):
-        return np.array([[8., 0], [0, 2.]])
-
-    # Норма x.
-    @staticmethod
-    def norma(x):
-        return np.sqrt(x[0] ** 2 + x[1] ** 2)
-
-    @staticmethod
-    def mcvard(x0, f, eps=10**(-20), u=10**2, max_iter=50):
-        k = 0
-
-        x1 = np.array([])
-
-        E = np.array([[1, 0], [0, 1]])
-
-        while Team5.norma(Team5.gradient(x0)) >= eps and k < max_iter:
-            x1 = x0 - np.dot(linalg.inv(Team5.hesse(x0) + u * E), Team5.gradient(x0))
-
-            if f(x1) < f(x0):
-                u /= 2
-            else:
-                u *= 2
-
-            x0 = x1.copy()
-            k += 1
-
-        return x1, f(x1), k
-
-
-
