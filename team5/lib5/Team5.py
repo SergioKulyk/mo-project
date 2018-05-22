@@ -1,18 +1,13 @@
-import numpy as np
-import matplotlib.pyplot as plt
+from random import *
 
 from numpy import linalg
-from random import *
+
+from team5.utilities.Utilities import *
 
 
 class Team5:
-
-    def __init__(sef):
-        """Constructors"""
-        pass
-
     # --------------------------------------------------------------------------------
-    '''Метод золотого перерізу'''
+    """Метод золотого перерізу"""
 
     @staticmethod
     def golden_section(a, b, f, eps=10 ** (-4), t=0.38196):
@@ -36,7 +31,7 @@ class Team5:
         return x_min, f(x_min), k
 
     # --------------------------------------------------------------------------------
-    '''Метод хорд'''
+    """ Метод хорд """
 
     @staticmethod
     def toxins(a, b, f, df, eps=10 ** (-4)):
@@ -97,11 +92,7 @@ class Team5:
     """ Найшвідшого градієнтного спуску """
 
     @staticmethod
-    def grad(x):
-        return np.array([2 * x[0] + 4 * x[1], 4 * x[0] + 34 * x[1] + 5])
-
-    @staticmethod
-    def dichotomy(x0, f, a=-5, b=6, eps=10 ** (-6)):
+    def dichotomy(x0, f, gradient, a=-5, b=6, eps=10 ** (-6)):
 
         delta = eps / 10
 
@@ -109,8 +100,8 @@ class Team5:
             alpha1 = (a + b - delta) / 2
             alpha2 = (a + b + delta) / 2
 
-            f1 = f(x0 - alpha1 * Team5.grad(x0))
-            f2 = f(x0 - alpha2 * Team5.grad(x0))
+            f1 = f(x0 - alpha1 * gradient(x0))
+            f2 = f(x0 - alpha2 * gradient(x0))
 
             if f1 < f2:
                 b = alpha2
@@ -120,29 +111,22 @@ class Team5:
         return (a + b) / 2
 
     @staticmethod
-    def norma_faster_gradient_descent(g):
-        s = 0
-        for i in range(0, len(g)):
-            s = s + g[i] ** 2
-        return np.sqrt(s)
-
-    @staticmethod
-    def faster_gradient_descent(x0, f, eps=10 ** (-4)):
+    def faster_gradient_descent(x0, f, gradient, eps=10 ** (-4)):
         k = 1
 
-        p = -Team5.grad(x0)
+        p = -gradient(x0)
 
-        alpha = Team5.dichotomy(x0, f)
+        alpha = Team5.dichotomy(x0, f, gradient)
 
         x1 = x0 + alpha * p
 
-        while Team5.norma_faster_gradient_descent(Team5.grad(x1)) > eps:
-            b = Team5.norma_faster_gradient_descent(Team5.grad(x1)) ** 2 / Team5.norma_faster_gradient_descent(
-                Team5.grad(x0)) ** 2
-            p = - Team5.grad(x1) + b * p
+        while Utilities.norma_faster_gradient_descent(gradient(x1)) > eps:
+            b = Utilities.norma_faster_gradient_descent(gradient(x1)) ** 2 / Utilities.norma_faster_gradient_descent(
+                gradient(x0)) ** 2
+            p = - gradient(x1) + b * p
 
             x0 = x1
-            alpha = Team5.dichotomy(x0, f)
+            alpha = Team5.dichotomy(x0, f, gradient)
 
             x1 = x0 + alpha * p
 
@@ -153,31 +137,16 @@ class Team5:
     # --------------------------------------------------------------------------------
     """ Метод Макварда """
 
-    # Допоміжний метод
     @staticmethod
-    def gradient(x):
-        return np.array([8. * (x[0] - 5), 2 * (x[1] - 6)])
-
-    # Допоміжний метод
-    @staticmethod
-    def hesse(x0):
-        return np.array([[8., 0], [0, 2.]])
-
-    # Норма x.
-    @staticmethod
-    def norma_mcvard(x):
-        return np.sqrt(x[0] ** 2 + x[1] ** 2)
-
-    @staticmethod
-    def mcvard(x0, f, eps=10 ** (-20), u=10 ** 2, max_iter=50):
+    def mcvard(x0, f, gradient, hesse, eps=10 ** (-20), u=10 ** 2, max_iter=50):
         k = 0
 
         x1 = np.array([])
 
         E = np.array([[1, 0], [0, 1]])
 
-        while Team5.norma_mcvard(Team5.gradient(x0)) >= eps and k < max_iter:
-            x1 = x0 - np.dot(linalg.inv(Team5.hesse(x0) + u * E), Team5.gradient(x0))
+        while Utilities.norma_mcvard(gradient(x0)) >= eps and k < max_iter:
+            x1 = x0 - np.dot(linalg.inv(hesse(x0) + u * E), gradient(x0))
 
             if f(x1) < f(x0):
                 u /= 2
@@ -253,16 +222,6 @@ class Team5:
             k += 1
 
             if plot_animation:
-                Team5.plot_anim(x, xmax, xmin)
+                Utilities.plot_anim(x, xmax, xmin)
 
         return fp[gbest], p[gbest], k
-
-    @staticmethod
-    def plot_anim(x, xmax, xmin):
-        plt.clf()
-        for i in range(0, len(x)):
-            axes = plt.gca()
-            axes.set_xlim([xmin, xmax])
-            axes.set_ylim([xmin, xmax])
-            plt.plot(x[i][0], x[i][1], 'ro')
-        plt.pause(0.1)
