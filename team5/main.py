@@ -1,5 +1,3 @@
-import numpy as np
-
 from team5.lib5.Team5 import *
 
 
@@ -15,7 +13,8 @@ def print_res(method_name="none", res=None):
     print("-" * 50)
 
 
-# Тестовий приклад
+f_golden_test = lambda x: x ** 3 - 27 * x + 5
+
 def f1(x):
     return (x[0] + 2 * x[1] - 7) ** 2 + (2 * x[0] + x[1] - 5) ** 2
 
@@ -33,8 +32,24 @@ def df_toxins_test(x):
     return 2 * x + 1 + np.cos(x)
 
 
+def f_golden_test(x):
+    return x ** 3 - 27 * x + 5
+
+
 # Створюємо обєкт класа Team5
 team5 = Team5()
+
+# ----------------------------------------------------------
+# Тест методу золотого перерізу
+a = -4
+b = 4
+
+golden_section_name = "Метод золотого перерізу"
+golden_section_res = Team5.golden_section(a, b, f_golden_test)
+
+print_res(golden_section_name, golden_section_res)
+# ----------------------------------------------------------
+
 
 # ----------------------------------------------------------
 # Тест методу рою частинок
