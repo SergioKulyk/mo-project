@@ -39,7 +39,6 @@ class Team5:
         return x_min, f(x_min), k
 
     # --------------------------------------------------------------------------------
-
     '''Метод хорд'''
 
     @staticmethod
@@ -98,8 +97,7 @@ class Team5:
         return [x1, f(x1), k]
 
     # --------------------------------------------------------------------------------
-
-    # Метод рою частиць
+    """ Метод рою частиць """
     @staticmethod
     def swarm_parties(s, d, f, swarm=50, xmin=-10, xmax=10, w=0.72, c1=1.19, c2=1.19, plot_animation=False):
         k = 1
@@ -176,7 +174,7 @@ class Team5:
         plt.pause(0.1)
 
     # --------------------------------------------------------------------------------
-    # Метод Макварда
+    """ Метод Макварда """
 
     # Допоміжний метод
     @staticmethod
@@ -194,7 +192,7 @@ class Team5:
         return np.sqrt(x[0] ** 2 + x[1] ** 2)
 
     @staticmethod
-    def mcvard(x0, eps, u, f, max_iter=50):
+    def mcvard(x0, f, eps=10**(-20), u=10**2, max_iter=50):
         k = 0
 
         x1 = np.array([])
