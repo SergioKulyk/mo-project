@@ -10,15 +10,40 @@ from numpy import linalg
 class Team5:
     """"""
 
-    def __init__(self):
+    def __init__(sef):
         """Constructors"""
         pass
 
     # --------------------------------------------------------------------------------
+    '''Метод золотого перерізу'''
+
+    @staticmethod
+    def golden_section(a, b, f, eps=10**(-4), t=0.38196):
+
+        k = 0
+        while abs(a - b) > eps:
+            y = a + t * (b - a)
+            z = a + b - y
+            fy = f(y)
+            fz = f(z)
+
+            if fy <= fz:
+                b = z
+            else:
+                a = y
+
+            k += 1
+
+        x_min = (a + b) / 2
+
+        return x_min, f(x_min), k
+
+    # --------------------------------------------------------------------------------
 
     '''Метод хорд'''
+
     @staticmethod
-    def toxins(a, b, f, df, eps=10**(-4)):
+    def toxins(a, b, f, df, eps=10 ** (-4)):
 
         k = 0
         x = a - (a + b) * df(a) / (df(a) - df(b))
@@ -193,6 +218,3 @@ class Team5:
 
     def norma_huca_jivsa(x):
         return max(map(abs, x))
-
-
-
