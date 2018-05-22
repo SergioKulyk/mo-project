@@ -59,6 +59,44 @@ class Team5:
 
         return x, f(x), k
 
+    # ----------------------------------------------------------------------------------
+    """ Метод Хука-Дживса """
+
+    @staticmethod
+    def huca_jivsa(x0, f, delta=0.5, alpha=2., lamb=1., eps=10e-4):
+        n = len(x0)
+
+        x1 = np.zeros(n, dtype=np.float)
+        k = 1
+
+        while delta > eps and k < 450:
+            y1 = np.zeros(n, dtype=np.float)
+
+            for i in range(0, n):
+
+                y0 = x0.copy()
+                y0[i] = y0[i] + delta
+
+                if f(y0) < f(x0):
+                    y1[i] = y0[i]
+                else:
+                    y0[i] = y0[i] - 2 * delta
+                    if f(y0) < f(x0):
+                        y1[i] = y0[i]
+                    else:
+                        y1[i] = x0[i]
+
+            if f(y1) < f(x0):
+                x1 = y1.copy()
+                x1 = x1 + lamb * (x1 - x0)
+                x0 = x1.copy()
+            else:
+                delta = delta / alpha
+
+            k = k + 1
+
+        return [x1, f(x1), k]
+
     # --------------------------------------------------------------------------------
 
     # Метод рою частиць
@@ -138,7 +176,6 @@ class Team5:
         plt.pause(0.1)
 
     # --------------------------------------------------------------------------------
-
     # Метод Макварда
 
     # Допоміжний метод
@@ -177,44 +214,5 @@ class Team5:
 
         return x1, f(x1), k
 
-    # --------------------------------------------------------------------------------
 
-    # Метод Хука-Дживса
-    @staticmethod
-    def huca_jivsa(x, h, a, lam, f, eps=10e-4):
-        k = 0
 
-        y = x
-        y1 = x
-
-        while Team5.norma_huca_jivsa(x) <= eps:
-            if f([y[0] + h, y[1]]) < f(y):
-                if f([y[0] + h, y[1] + h]) < f(y):
-                    y1 = y1 + h
-                elif f([y[0] + h, y[1] - h]) < f(y):
-                    y1[0] = y1[0] + h
-                    y1[1] = y1[1] - h
-            elif f([y[0] - h, y[1]]) < f(y):
-                if f([y[0] - h, y[1] + h]) < f(y):
-                    y1[0] = y1[0] - h
-                    y1[1] = y1[1] + h
-                elif f([y[0] - h, y[1] - h]) < f(y):
-                    y1 = y1 - h
-            else:
-                y1 = y
-
-            if f(y1) < f(y):
-                x1 = y1
-                y = x1 + lam * (x1 - x)
-            else:
-                pass
-
-            h /= a
-            y = x
-            k += 1
-            print(x)
-
-        return x, f(x), k
-
-    def norma_huca_jivsa(x):
-        return max(map(abs, x))
