@@ -4,6 +4,13 @@ import matplotlib.pyplot as plt
 
 class Utilities:
 
+    gol_name = "Метод золотого перерізу"
+    tox_name = "Метод хорд"
+    huc_name = "Метод Хука-Дживса"
+    fgd_name = "Найшвідшого градієнтного спуску"
+    mcv_name = "Метод Макварада"
+    swr_name = "Метод рою частинок"
+
     @staticmethod
     def norma_faster_gradient_descent(g):
         s = 0
