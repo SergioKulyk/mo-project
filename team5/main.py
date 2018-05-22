@@ -14,14 +14,14 @@ def print_res(method_name="none", res=None):
 
 
 f_golden_test = lambda x: x ** 3 - 27 * x + 5
+f_huca_jivsa_test = lambda x: 4. * (x[0] - 5) ** 2 + (x[1] - 6) ** 2
+
 
 def f1(x):
     return (x[0] + 2 * x[1] - 7) ** 2 + (2 * x[0] + x[1] - 5) ** 2
 
 
 # Тестовий приклад
-def f2(x):
-    return 4. * (x[0] - 5) ** 2 + (x[1] - 6) ** 2
 
 
 def f_toxins_test(x):
@@ -72,7 +72,7 @@ eps = 10 ** (-20)
 u = 10 ** 2
 
 mcvard_name = "Метод Макварада"
-mcvard_res = team5.mcvard(x0, eps, u, f2)
+mcvard_res = team5.mcvard(x0, eps, u, f_huca_jivsa_test)
 
 print_res(mcvard_name, mcvard_res)
 
@@ -83,12 +83,8 @@ print_res(mcvard_name, mcvard_res)
 # Тест методу Хука-Джівса
 x = np.array([1, 3])
 
-h = 0.5
-a = 1
-lam = 1
-
 huca_jivsa_name: str = "Метод Хука-Дживса"
-huca_jivsa_res = team5.huca_jivsa(x, h, a, lam, f2)
+huca_jivsa_res = team5.huca_jivsa(x, f_huca_jivsa_test)
 
 print_res(huca_jivsa_name, huca_jivsa_res)
 
